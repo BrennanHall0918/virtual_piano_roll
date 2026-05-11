@@ -1,0 +1,142 @@
+/* Reset */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Root (Colors) */
+:root {
+    --background: #F8F9FA;
+    --naturals: #DEE2E6;
+    --sharps: #212529;
+}
+
+/* General Styling */
+body {
+    background-color: var(--background);
+    font-family: Arial, sans-serif;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Piano Container*/
+.roll {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    padding: 20px;
+    border-radius: 12px;
+}
+
+.key-grid-sharps-oct1,
+.key-grid-sharps-oct2,
+.key-grid-naturals-oct1,
+.key-grid-naturals-oct2 {
+    display: flex;
+    gap: 10px;
+}
+
+/* Indenting  */
+.key-grid-sharps-oct1,
+.key-grid-sharps-oct2 {
+    margin-left: 40px;
+}
+
+/* Button Styling */
+button {
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+.oct1,
+.oct2 {
+    position: relative;
+}
+
+/* Keys */
+
+/* Naturals (White Keys) */
+.natural {
+    width: 4.5em;
+    height: 4.5em;
+
+    background: var(--naturals);
+    border: 1px solid #999;
+
+    border-radius: 10px;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+
+    padding-bottom: 18px;
+
+    font-size: 1em;
+    font-weight: bold;
+    color: #111;
+
+    cursor: pointer;
+
+    position: relative;
+
+    transition: .1s;
+    box-shadow: 0px 0px 14px 1px #606060;
+}
+
+.natural:active {
+    transform: translateY(3px);
+    background: #caced2;
+}
+
+/* Sharps (Black Keys) */
+.sharp {
+    width: 3.75em;
+    height: 3.75em;
+
+    background: var(--sharps);
+    color: white;
+
+    border-radius: 10px;
+
+    font-size: .95rem;
+    font-weight: bold;
+    margin: .5rem;
+    
+    transition: .1s;
+    box-shadow: 0px 0px 14px 1px #606060;
+}
+
+.sharp:active {
+    transform: translateY(3px);
+    background: #171a1e;
+}
+
+/* Octave Label */
+.octave-num {
+    font-size: .7rem;
+    opacity: .7;
+    margin-left: 2px;
+}
+
+/* Spacing Buttons (Between the D# and F# keys) (There was definitely a better way to do this) */
+.invisible {
+    background: var(--background);
+    box-shadow: none;
+    cursor: auto;
+}
+
+.invisible:active {
+    background: var(--background);
+}
+
+/* Notes:
+    - Add key reference to top of each button (Ex: C5 == Q) */
