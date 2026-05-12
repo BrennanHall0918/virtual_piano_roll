@@ -119,6 +119,12 @@ button {
     transform: translateY(3px);
     background: #171a1e;
 }
+.natural, .sharp {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
 
 /* Octave Label */
 .octave-num {
@@ -137,6 +143,3 @@ button {
 .invisible:active {
     background: var(--background);
 }
-
-/* Notes:
-    - Add key reference to top of each button (Ex: C5 == Q) */
