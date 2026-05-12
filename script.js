@@ -126,6 +126,8 @@ const noteTable = {
 };
 
 const audioContext = new AudioContext();
+// Contains a list of every currently active note
+const activeOscillators = {};
 
 // Listens for a keypress
 document.addEventListener("keydown", (event)=> {
@@ -149,12 +151,28 @@ document.addEventListener("keydown", (event)=> {
     playNote(noteData);
 })
 
+// Listens for a key being lifted
+document.addEventListener("keyup", (event)=> {
+
+    // Stores the key that is no longer being pressed
+    const key = event.key.toLowerCase();
+
+    // pulls all note data for that note
+    const noteData = noteTable[key];
+
+    // If note doesn't exist, stop
+    if (!noteData) return;
+
+    // Stop the note
+    stopNote(noteData);
+})
+
 // Generates a tone based on the frequency of the selected note
 function playNote(noteData) {
 
     // Making the oscillator (generates the note) and the gainNode (volume)
     const oscillator = audioContext.createOscillator();
-    oscillator.type = "sine";
+    oscillator.type = "square";
     const gainNode = audioContext.createGain();
     
     // connecting the oscillator and gain together
@@ -171,13 +189,27 @@ function playNote(noteData) {
     // Starts the oscillator
     oscillator.start();
 
-    // Stops the oscillator after half a second
-    // Note Support Mulitple Notes at Once
-    // Idea: Sustain pedal of some kind? Maybe bound to shift
-    oscillator.stop(audioContext.currentTime + .3);
+    // Stores the note in the object containing all active notes
+    activeOscillators[noteData.note] = {
+        oscillator,
+        gainNode
+    };
+}
 
-    // Marks note as inactive once the oscillator is done
-    oscillator.onended = ()=> {
-        noteData.active = false;
-    }
+// Stops the note once the key is lifted
+function stopNote(noteData) {
+
+    // Checks if the note is in the object of active notes
+    const activeNote = activeOscillators[noteData.note];
+    if (!activeNote) return;
+
+    // Stops the note
+    // Note: Add a gradual stop as apposed to this immediate one
+    activeNote.oscillator.stop();
+
+    // Removes the note from the list of active notes
+    delete activeOscillators[noteData.note];
+
+    // Sets the active flag to false
+    noteData.active = false;
 }
