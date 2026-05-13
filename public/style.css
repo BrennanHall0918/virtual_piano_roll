@@ -7,139 +7,243 @@
     box-sizing: border-box;
 }
 
-/* Root (Colors) */
+/* Root Colors */
 :root {
-    --background: #F8F9FA;
-    --naturals: #DEE2E6;
-    --sharps: #212529;
+    --background: #0B1020;
+    --panel: #151A2E;
+
+    --naturals: #2A3555;
+    --naturals-active: #4DA3FF;
+
+    --sharps: #1A2238;
+    --sharps-active: #00E5A8;
+
+    --text: #f9fafb;
 }
 
 /* General Styling */
 body {
-    background-color: var(--background);
+    min-height: 100vh;
+
+    background:
+        radial-gradient(circle at top, #182033 0%, #0b0f1a 60%);
+
     font-family: Arial, sans-serif;
+    color: var(--text);
+
+    display: flex;
+    flex-direction: column;
 }
 
+/* Header/Footer */
+header,
+footer {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+h1 {
+    font-size: 2rem;
+    letter-spacing: 1px;
+}
+
+/* Main Layout */
 main {
+    flex: 1;
+
     display: flex;
     justify-content: center;
     align-items: center;
+
+    padding: 2rem;
 }
 
-/* Piano Container*/
+/* Main Controller Body */
 .roll {
+    background: var(--panel);
+    backdrop-filter: blur(12px);
+
+    border: 2px solid var(--naturals-active);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow:
+        0 20px 40px rgba(0,0,0,.5);
+
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-
-    padding: 20px;
-    border-radius: 12px;
+    gap: 1.25rem;
 }
 
-.key-grid-sharps-oct1,
-.key-grid-sharps-oct2,
-.key-grid-naturals-oct1,
-.key-grid-naturals-oct2 {
+/* Top Controls */
+.controls {
     display: flex;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    margin-bottom: .5rem;
 }
 
-/* Indenting  */
-.key-grid-sharps-oct1,
-.key-grid-sharps-oct2 {
-    margin-left: 40px;
+/* Volume Module */
+.volume-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: .45rem;
 }
 
-/* Button Styling */
-button {
-    border: none;
+/* Volume Label */
+.volume-control label {
+    font-size: .7rem;
+    font-weight: bold;
+
+    letter-spacing: 2px;
+
+    opacity: .7;
+}
+
+/* Slider Base */
+#volume {
+    width: 120px;
+
+    appearance: none;
+    cursor: pointer;
+
+    border: 1px solid black;
+    border-radius: 15px;
+
+    background: var(--sharps-active);
+}
+
+/* Waveform Select */
+.waveform-control {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: .5rem;
+}
+
+.waveform-control label,
+.volume-control label {
+    font-size: .7rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    opacity: .7;
+}
+
+/* Waveform Selection Menu */
+#waveform {
+    background: var(--naturals);
+    color: var(--text);
+
+    border: 2px solid var(--naturals-active);
+    border-radius: 10px;
+
+    padding: .5rem .75rem;
+    font-size: .85rem;
     outline: none;
     cursor: pointer;
 }
 
+/* Octaves */
 .oct1,
 .oct2 {
-    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 }
 
-/* Keys */
+/* Grid Layout */
+.key-grid-sharps-oct1,
+.key-grid-sharps-oct2,
+.key-grid-naturals-oct1,
+.key-grid-naturals-oct2 {
+    display: grid;
 
-/* Naturals (White Keys) */
-.natural {
-    width: 4.5em;
-    height: 4.5em;
+    grid-template-columns: repeat(7, 1fr);
 
-    background: var(--naturals);
-    border: 1px solid #999;
+    gap: 1rem;
+}
 
-    border-radius: 10px;
+/* Piano Spacing */
+.key-grid-sharps-oct1,
+.key-grid-sharps-oct2 {
+    margin-left: 55px;
+}
 
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-
-    padding-bottom: 18px;
-
-    font-size: 1em;
-    font-weight: bold;
-    color: #111;
+/* Base Button Styling */
+button {
+    border: none;
+    outline: none;
 
     cursor: pointer;
 
-    position: relative;
+    user-select: none;
 
-    transition: .1s;
-    box-shadow: 0px 0px 14px 1px #606060;
+    transition:
+        transform .08s ease,
+        background .15s ease,
+        box-shadow .15s ease;
 }
 
-.natural:active {
-    transform: translateY(3px);
-    background: #caced2;
-}
-
-/* Sharps (Black Keys) */
+/* Pad Styling */
+.natural,
 .sharp {
-    width: 3.75em;
-    height: 3.75em;
+    width: 90px;
+    height: 90px;
 
-    background: var(--sharps);
-    color: white;
+    border-radius: 20px;
 
-    border-radius: 10px;
-
-    font-size: .95rem;
-    font-weight: bold;
-    margin: .5rem;
-    
-    transition: .1s;
-    box-shadow: 0px 0px 14px 1px #606060;
-}
-
-.sharp:active {
-    transform: translateY(3px);
-    background: #171a1e;
-}
-.natural, .sharp {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
+
+    padding: 12px;
+
+    position: relative;
 }
 
-/* Octave Label */
+/* Natural Pads */
+.natural {
+    background: var(--naturals);
+    color: white;
+}
+
+/* Sharp Pads */
+.sharp {
+    background: var(--sharps);
+    color: #d1d5db;
+}
+
+.active-pad {
+    transform: scale(1.05);
+    background: var(--sharps-active);
+    color: var(--background);
+}
+
+/* Keybind Text */
+.keybind {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+/* Note Label */
+.note {
+    font-size: .9rem;
+    letter-spacing: 1px;
+}
+
+/* Octave Number */
 .octave-num {
     font-size: .7rem;
     opacity: .7;
-    margin-left: 2px;
 }
 
-/* Spacing Buttons (Between the D# and F# keys) (There was definitely a better way to do this) */
+/* Empty Spacer Pads */
 .invisible {
-    background: var(--background);
+    opacity: 0;
+    pointer-events: none;
     box-shadow: none;
-    cursor: auto;
-}
-
-.invisible:active {
-    background: var(--background);
 }

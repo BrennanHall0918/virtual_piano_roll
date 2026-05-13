@@ -1,5 +1,9 @@
 // Selecting All Notes
 const notes = document.querySelector("[data-note]");
+// Volume
+const volumeSlider = document.querySelector("#volume");
+// Waveform
+const waveformSelect = document.querySelector("#waveform")
 
 // Lookup table for the event listener
 const noteTable = {
@@ -126,8 +130,22 @@ const noteTable = {
 };
 
 const audioContext = new AudioContext();
+// Default volume
+let volume = 0.2;
+// Default waveform
+let currentWaveform = "sine";
 // Contains a list of every currently active note
 const activeOscillators = {};
+
+// Takes the value from the volume slider HTML to create a number for the gainNode
+volumeSlider.addEventListener("input", () => {
+    volume = parseFloat(volumeSlider.value);
+});
+
+// Determins the waveform
+waveformSelect.addEventListener("change", ()=> {
+    currentWaveform = waveformSelect.value;
+})
 
 // Listens for a keypress
 document.addEventListener("keydown", (event)=> {
@@ -172,7 +190,7 @@ function playNote(noteData) {
 
     // Making the oscillator (generates the note) and the gainNode (volume)
     const oscillator = audioContext.createOscillator();
-    oscillator.type = "square";
+    oscillator.type = currentWaveform;
     const gainNode = audioContext.createGain();
     
     // connecting the oscillator and gain together
@@ -184,10 +202,17 @@ function playNote(noteData) {
     
     // Setting the volume to 0.2
     // Note: Add a UI volume slider
-    gainNode.gain.value = 0.2;
+    gainNode.gain.value = volume;
 
     // Starts the oscillator
     oscillator.start();
+
+    // Adds a styling class to all active notes
+    const button = document.querySelector(
+        `[data-note="${noteData.note}"]`
+    );
+
+    button.classList.add("active-pad");
 
     // Stores the note in the object containing all active notes
     activeOscillators[noteData.note] = {
@@ -203,9 +228,20 @@ function stopNote(noteData) {
     const activeNote = activeOscillators[noteData.note];
     if (!activeNote) return;
 
+    const now = audioContext.currentTime;
+
+    // Gradually decreses the volume over half a second
+    activeNote.gainNode.gain.exponentialRampToValueAtTime(0.00001, now + .5);
+
     // Stops the note
-    // Note: Add a gradual stop as apposed to this immediate one
-    activeNote.oscillator.stop();
+    activeNote.oscillator.stop(now + .5);
+
+    // Removes the active class from the note
+    const button = document.querySelector(
+        `[data-note="${noteData.note}"]`
+    );
+
+    button.classList.remove("active-pad");
 
     // Removes the note from the list of active notes
     delete activeOscillators[noteData.note];

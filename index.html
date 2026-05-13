@@ -16,6 +16,30 @@
 
         <section class="roll">
 
+            <section class="controls">
+
+                <div class="waveform-control">
+                    <label for="waveform">Waveform</label>
+                    <select id="waveform">
+                        <option value="sine" selected>Sine</option>
+                        <option value="square">Square</option>
+                        <option value="triangle">Triangle</option>
+                        <option value="sawtooth">Sawtooth</option>
+                    </select>
+                </div>
+
+                <div class="volume-control">
+                    <label for="volume">< VOLUME ></label>
+                    <input
+                        type="range"
+                        id="volume"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value="0.2">
+                </div>
+            </section>
+
             <section class="oct1">
 
                 <section class="key-grid-sharps-oct1">
