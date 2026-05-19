@@ -139,6 +139,7 @@ const activeOscillators = {};
 
 // Pointer tracking for mouse/mobile
 let isPointerDown = false;
+const activePointers = {};
 let currentPointerNote = null;
 
 // Takes the value from the volume slider HTML to create a number for the gainNode
@@ -206,61 +207,79 @@ document.addEventListener("keyup", (event)=> {
     stopNote(noteData);
 });
 
-// Clicking/Touchscreens
-noteButtons.forEach((button)=> {
+// Clicking / Touchscreens
+noteButtons.forEach((button) => {
 
-    // Press
-    button.addEventListener("pointerdown", (event)=> {
+    button.addEventListener("pointerdown", (event) => {
 
         event.preventDefault();
 
-        isPointerDown = true;
-
         const noteName = button.dataset.note;
 
-        // find matching note
         const noteData = Object.values(noteTable).find(
             note => note.note === noteName
         );
 
-        // Stop if no note
-        if (!noteData) return;
+        if (!noteData || noteData.active) return;
 
-        playNoteMobile(noteData);
+        noteData.active = true;
+
+        // Store which note this finger/pointer owns
+        activePointers[event.pointerId] = noteData;
+
+        playNote(noteData);
     });
 });
 
-// Dragging onto another key
-document.addEventListener("pointermove", (event)=> {
-    if (!isPointerDown) return;
+// Dragging across notes
+document.addEventListener("pointermove", (event) => {
 
-    const pElement = document.elementFromPoint(
+    // Ignore pointers not currently active
+    if (!activePointers[event.pointerId]) return;
+
+    const element = document.elementFromPoint(
         event.clientX,
         event.clientY
     );
 
-    if (!pElement || !pElement.matches("[data-note]")) return;
+    if (!element || !element.matches("[data-note]")) return;
 
-    const noteName = pElement.dataset.note;
+    const noteName = element.dataset.note;
 
-    const noteData = Object.values(noteTable).find(
+    const newNoteData = Object.values(noteTable).find(
         note => note.note === noteName
     );
 
+    if (!newNoteData) return;
+
+    const oldNoteData = activePointers[event.pointerId];
+
+    // Ignore same note
+    if (oldNoteData === newNoteData) return;
+
+    // Stop previous note for THIS finger
+    stopNote(oldNoteData);
+
+    // Start new note
+    if (!newNoteData.active) {
+        newNoteData.active = true;
+        playNote(newNoteData);
+    }
+
+    // Update pointer ownership
+    activePointers[event.pointerId] = newNoteData;
+});
+
+// Releasing finger/mouse
+document.addEventListener("pointerup", (event) => {
+
+    const noteData = activePointers[event.pointerId];
+
     if (!noteData) return;
 
-    playNoteMobile(noteData);
-    });
+    stopNote(noteData);
 
-// Releasing the note (click/touch)
-document.addEventListener("pointerup", ()=> {
-
-    isPointerDown = false;
-
-    if (currentPointerNote) {
-        stopNote(currentPointerNote);
-        currentPointerNote = null;
-    }
+    delete activePointers[event.pointerId];
 });
 
 // Generates a tone based on the frequency of the selected note
