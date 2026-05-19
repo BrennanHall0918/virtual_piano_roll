@@ -1,5 +1,5 @@
 // Selecting All Notes
-const notes = document.querySelector("[data-note]");
+const noteButtons = document.querySelectorAll("[data-note]");
 // Volume
 const volumeSlider = document.querySelector("#volume");
 // Waveform
@@ -184,6 +184,62 @@ document.addEventListener("keyup", (event)=> {
     // Stop the note
     stopNote(noteData);
 })
+
+// Clicking/Touchscreens
+noteButtons.forEach((button)=> {
+
+    // Press
+    button.addEventListener("pointerdown", (event)=> {
+
+        event.preventDefault();
+
+        const noteName = button.dataset.note;
+
+        // find matching note
+        const noteData = Object.values(noteTable).find(
+            note => note.note === noteName
+        );
+
+        // Stop if no note
+        if (!noteData || noteData.active) return;
+
+        noteData.active = true;
+
+        // play note
+        playNote(noteData);
+    });
+
+    // Release
+    button.addEventListener("pointerup", ()=> {
+
+        const noteName = button.dataset.note;
+
+        // find matching note
+        const noteData = Object.values(noteTable).find(
+            note => note.note === noteName
+        );
+
+        if (!noteData) return;
+
+        stopNote(noteData);
+    });
+
+    // If pointer leaves
+    button.addEventListener("pointerleave", ()=> {
+
+        const noteName = button.dataset.note;
+
+        // find matching note
+        const noteData = Object.values(noteTable).find(
+            note => note.note === noteName
+        );
+
+        if (!noteData) return;
+
+        stopNote(noteData);
+    });
+
+});
 
 // Generates a tone based on the frequency of the selected note
 function playNote(noteData) {
