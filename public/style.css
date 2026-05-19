@@ -247,3 +247,8 @@ button {
     pointer-events: none;
     box-shadow: none;
 }
+
+/* Click and drag */
+[data-note] {
+    touch-action: none;
+}

@@ -137,6 +137,10 @@ let currentWaveform = "sine";
 // Contains a list of every currently active note
 const activeOscillators = {};
 
+// Pointer tracking for mouse/mobile
+let isPointerDown = false;
+let currentPointerNote = null;
+
 // Takes the value from the volume slider HTML to create a number for the gainNode
 volumeSlider.addEventListener("input", () => {
     volume = parseFloat(volumeSlider.value);
@@ -193,6 +197,8 @@ noteButtons.forEach((button)=> {
 
         event.preventDefault();
 
+        isPointerDown = true;
+
         const noteName = button.dataset.note;
 
         // find matching note
@@ -201,44 +207,57 @@ noteButtons.forEach((button)=> {
         );
 
         // Stop if no note
-        if (!noteData || noteData.active) return;
+        if (!noteData) return;
 
-        noteData.active = true;
+        if (currentPointerNote) {
+            stopNote(currentPointerNote);
+        }
 
-        // play note
-        playNote(noteData);
+        currentPointerNote = noteData;
+
+        if (!noteData.active) {
+            noteData.active = true;
+            playNote(noteData);
+        }
     });
 
-    // Release
-    button.addEventListener("pointerup", ()=> {
+    // Dragging onto another key
+    button.addEventListener("pointerenter", ()=> {
+
+        if (!isPointerDown) return;
 
         const noteName = button.dataset.note;
 
-        // find matching note
         const noteData = Object.values(noteTable).find(
             note => note.note === noteName
         );
 
         if (!noteData) return;
 
-        stopNote(noteData);
+        if (currentPointerNote === noteData) return;
+
+        if (currentPointerNote) {
+            stopNote(currentPointerNote);
+        }
+
+        currentPointerNote = noteData;
+
+        if (!noteData.active) {
+            noteData.active = true;
+            playNote(noteData);
+        }
     });
+});
 
-    // If pointer leaves
-    button.addEventListener("pointerleave", ()=> {
+// Releasing the note (click/touch)
+document.addEventListener("pointerup", ()=> {
 
-        const noteName = button.dataset.note;
+    isPointerDown = false;
 
-        // find matching note
-        const noteData = Object.values(noteTable).find(
-            note => note.note === noteName
-        );
-
-        if (!noteData) return;
-
-        stopNote(noteData);
-    });
-
+    if (currentPointerNote) {
+        stopNote(currentPointerNote);
+        currentPointerNote = null;
+    }
 });
 
 // Generates a tone based on the frequency of the selected note
