@@ -149,7 +149,24 @@ volumeSlider.addEventListener("input", () => {
 // Determins the waveform
 waveformSelect.addEventListener("change", ()=> {
     currentWaveform = waveformSelect.value;
-})
+});
+
+// Play note for phones
+function playNoteMobile(noteData) {
+
+    if (currentPointerNote === noteData) return;
+
+    if (currentPointerNote) {
+        stopNote(currentPointerNote);
+    }
+
+    currentPointerNote = noteData;
+
+    if (!noteData.active) {
+        noteData.active = true;
+        playNote(noteData);
+    }
+}
 
 // Listens for a keypress
 document.addEventListener("keydown", (event)=> {
@@ -171,7 +188,7 @@ document.addEventListener("keydown", (event)=> {
 
     // Play the note
     playNote(noteData);
-})
+});
 
 // Listens for a key being lifted
 document.addEventListener("keyup", (event)=> {
@@ -187,7 +204,7 @@ document.addEventListener("keyup", (event)=> {
 
     // Stop the note
     stopNote(noteData);
-})
+});
 
 // Clicking/Touchscreens
 noteButtons.forEach((button)=> {
@@ -209,45 +226,31 @@ noteButtons.forEach((button)=> {
         // Stop if no note
         if (!noteData) return;
 
-        if (currentPointerNote) {
-            stopNote(currentPointerNote);
-        }
-
-        currentPointerNote = noteData;
-
-        if (!noteData.active) {
-            noteData.active = true;
-            playNote(noteData);
-        }
-    });
-
-    // Dragging onto another key
-    button.addEventListener("pointerenter", ()=> {
-
-        if (!isPointerDown) return;
-
-        const noteName = button.dataset.note;
-
-        const noteData = Object.values(noteTable).find(
-            note => note.note === noteName
-        );
-
-        if (!noteData) return;
-
-        if (currentPointerNote === noteData) return;
-
-        if (currentPointerNote) {
-            stopNote(currentPointerNote);
-        }
-
-        currentPointerNote = noteData;
-
-        if (!noteData.active) {
-            noteData.active = true;
-            playNote(noteData);
-        }
+        playNoteMobile(noteData);
     });
 });
+
+// Dragging onto another key
+document.addEventListener("pointermove", (event)=> {
+    if (!isPointerDown) return;
+
+    const pElement = document.elementFromPoint(
+        event.clientX,
+        event.clientY
+    );
+
+    if (!pElement || !pElement.matches("[data-note]")) return;
+
+    const noteName = pElement.dataset.note;
+
+    const noteData = Object.values(noteTable).find(
+        note => note.note === noteName
+    );
+
+    if (!noteData) return;
+
+    playNoteMobile(noteData);
+    });
 
 // Releasing the note (click/touch)
 document.addEventListener("pointerup", ()=> {
@@ -294,7 +297,7 @@ function playNote(noteData) {
         oscillator,
         gainNode
     };
-}
+};
 
 // Stops the note once the key is lifted
 function stopNote(noteData) {
@@ -323,4 +326,4 @@ function stopNote(noteData) {
 
     // Sets the active flag to false
     noteData.active = false;
-}
+};

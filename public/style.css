@@ -1,4 +1,5 @@
 /* Reset */
+
 *,
 *::before,
 *::after {
@@ -8,6 +9,7 @@
 }
 
 /* Root Colors */
+
 :root {
     --background: #0B1020;
     --panel: #151A2E;
@@ -18,36 +20,47 @@
     --sharps: #1A2238;
     --sharps-active: #00E5A8;
 
-    --text: #f9fafb;
+    --text: #F9FAFB;
 }
 
-/* General Styling */
+/* General */
+
 body {
     min-height: 100vh;
 
     background:
-        radial-gradient(circle at top, #182033 0%, #0b0f1a 60%);
+        radial-gradient(circle at top,
+        #182033 0%,
+        #0b0f1a 60%);
 
     font-family: Arial, sans-serif;
     color: var(--text);
 
     display: flex;
     flex-direction: column;
+
+    overflow-x: hidden;
 }
 
-/* Header/Footer */
+a {
+    color: var(--naturals-active);
+}
+
+/* Header / Footer */
+
 header,
 footer {
     text-align: center;
-    padding: 1.5rem;
+    padding: .6rem;
 }
 
 h1 {
-    font-size: 2rem;
+    font-size: clamp(.9rem, 2vw, 2rem);
     letter-spacing: 1px;
 }
 
-/* Main Layout */
+/* Main */
+
 main {
     flex: 1;
 
@@ -55,36 +68,49 @@ main {
     justify-content: center;
     align-items: center;
 
-    padding: 2rem;
+    padding: 1rem;
 }
 
-/* Main Controller Body */
+/* Main Container */
+
 .roll {
     background: var(--panel);
     backdrop-filter: blur(12px);
 
     border: 2px solid var(--naturals-active);
     border-radius: 24px;
-    padding: 2rem;
+
+    padding: clamp(.5rem, 2vw, 2rem);
+
     box-shadow:
         0 20px 40px rgba(0,0,0,.5);
 
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: .75rem;
+
+    width: min-content;
+    max-width: 100%;
+
+    transform-origin: top center;
 }
 
-/* Top Controls */
+/* Controls */
+
 .controls {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
 
-    margin-bottom: .5rem;
+    gap: 1rem;
+
+    width: 100%;
 }
 
-/* Volume Module */
-.volume-control {
+/* Control Modules */
+
+.volume-control,
+.waveform-control {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -92,19 +118,19 @@ main {
     gap: .45rem;
 }
 
-/* Volume Label */
-.volume-control label {
+.volume-control label,
+.waveform-control label {
     font-size: .7rem;
     font-weight: bold;
 
     letter-spacing: 2px;
-
     opacity: .7;
 }
 
-/* Slider Base */
+/* Slider */
+
 #volume {
-    width: 120px;
+    width: clamp(90px, 15vw, 120px);
 
     appearance: none;
     cursor: pointer;
@@ -115,24 +141,8 @@ main {
     background: var(--sharps-active);
 }
 
-/* Waveform Select */
-.waveform-control {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+/* Dropdown */
 
-    gap: .5rem;
-}
-
-.waveform-control label,
-.volume-control label {
-    font-size: .7rem;
-    font-weight: bold;
-    letter-spacing: 2px;
-    opacity: .7;
-}
-
-/* Waveform Selection Menu */
 #waveform {
     background: var(--naturals);
     color: var(--text);
@@ -141,38 +151,49 @@ main {
     border-radius: 10px;
 
     padding: .5rem .75rem;
+
     font-size: .85rem;
+
     outline: none;
     cursor: pointer;
 }
 
 /* Octaves */
+
 .oct1,
 .oct2 {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: .6rem;
 }
 
-/* Grid Layout */
+/* Key Grids */
+
 .key-grid-sharps-oct1,
 .key-grid-sharps-oct2,
 .key-grid-naturals-oct1,
 .key-grid-naturals-oct2 {
     display: grid;
 
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, max-content);
 
-    gap: 1rem;
+    justify-content: center;
+
+    gap: clamp(.15rem, 1vw, 1rem);
+
+    width: fit-content;
+    max-width: 100%;
 }
 
-/* Piano Spacing */
+/* Sharp Offset */
+
 .key-grid-sharps-oct1,
 .key-grid-sharps-oct2 {
-    margin-left: 55px;
+    margin-left: clamp(18px, 4vw, 55px);
 }
 
-/* Base Button Styling */
+/* Button Base */
+
 button {
     border: none;
     outline: none;
@@ -187,68 +208,158 @@ button {
         box-shadow .15s ease;
 }
 
-/* Pad Styling */
+/* Pads */
+
 .natural,
 .sharp {
-    width: 90px;
-    height: 90px;
+    width: clamp(42px, 8vw, 90px);
+    height: clamp(42px, 8vw, 90px);
 
-    border-radius: 20px;
+    border-radius: clamp(12px, 2vw, 20px);
 
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;
 
-    padding: 12px;
+    padding: clamp(.25rem, 1vw, .75rem);
 
     position: relative;
 }
 
-/* Natural Pads */
+/* Pad Colors */
+
 .natural {
     background: var(--naturals);
     color: white;
 }
 
-/* Sharp Pads */
 .sharp {
     background: var(--sharps);
     color: #d1d5db;
 }
 
+/* Active State */
+
 .active-pad {
     transform: scale(1.05);
+
     background: var(--sharps-active);
     color: var(--background);
 }
 
-/* Keybind Text */
+/* Text */
+
 .keybind {
-    font-size: 1.4rem;
+    font-size: clamp(.8rem, 2vw, 1.4rem);
     font-weight: bold;
 }
 
-/* Note Label */
 .note {
-    font-size: .9rem;
+    font-size: clamp(.7rem, 1.5vw, 1rem);
+
     letter-spacing: 1px;
+
+    user-select: none;
 }
 
-/* Octave Number */
 .octave-num {
-    font-size: .7rem;
+    font-size: .7em;
     opacity: .7;
 }
 
-/* Empty Spacer Pads */
+/* Invisible Spacers */
+
 .invisible {
     opacity: 0;
+
     pointer-events: none;
     box-shadow: none;
 }
 
-/* Click and drag */
+/* Touch Dragging */
+
 [data-note] {
     touch-action: none;
+}
+
+/* Touch Devices */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .keybind {
+        display: none;
+    }
+
+    .natural,
+    .sharp {
+        justify-content: center;
+        gap: 0;
+    }
+
+    .note {
+        font-size: clamp(.8rem, 2vw, 1.2rem);
+        font-weight: bold;
+    }
+
+    .controls {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* Landscape Phones */
+
+@media (max-height: 500px) and (orientation: landscape) {
+
+    main {
+        align-items: flex-start;
+        padding: .25rem;
+    }
+
+    .roll {
+        gap: .5rem;
+    }
+
+    .controls {
+        flex-direction: row;
+        flex-wrap: nowrap;
+    }
+
+    .oct1,
+    .oct2 {
+        gap: .35rem;
+    }
+
+    header,
+    footer {
+        padding: .3rem;
+    }
+
+    h1 {
+        font-size: .85rem;
+    }
+}
+
+/* Small Devices */
+
+@media (max-width: 600px) {
+
+    .roll {
+        transform: scale(.9);
+    }
+}
+
+@media (max-width: 500px) {
+
+    .roll {
+        transform: scale(.8);
+    }
+}
+
+@media (max-width: 400px) {
+
+    .roll {
+        transform: scale(.7);
+    }
 }
